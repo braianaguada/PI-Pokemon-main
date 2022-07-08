@@ -8,8 +8,7 @@ modelTipo(db);
 
 const {Pokemon, Tipo} = db.models;
 
-Pokemon.belongsToMany(Tipo, {through: 'Pokemon_Tipo'});
-Tipo.belongsToMany(Pokemon, {through: 'Pokemon_Tipo'});
+
 
 module.exports = {
   ...db.models,
