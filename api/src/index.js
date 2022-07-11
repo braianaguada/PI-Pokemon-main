@@ -8,8 +8,6 @@ modelTipo(db);
 
 const {Pokemon, Tipo} = db.models;
 
-
-
 module.exports = {
   ...db.models,
   db,
