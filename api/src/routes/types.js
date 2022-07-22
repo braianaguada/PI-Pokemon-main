@@ -1,12 +1,13 @@
 const { Router } = require("express");
-const { Tipo } = require("../db");
-const express = require("express");
-const axios = require("axios");
 const router = Router();
+const { Tipo } = require("../db");
+const axios = require("axios");
+// const express = require("express");
 
-//! -----------------NO TERMINADO GET /types-----------------------
 
-router.get("/", async (req, res) => {
+
+//! -----------------TERMINADO GET /types-----------------------
+router.get("/", async (req, res, next) => {
   try {
     const typesAPI = await axios.get("https://pokeapi.co/api/v2/type");
     const contador = await Tipo.count();
@@ -22,7 +23,6 @@ router.get("/", async (req, res) => {
     next(error);
   }
 });
-//! FALTA LIMITAR BULKCREATE
 //! --------------------------------------------------
 
 module.exports = router;

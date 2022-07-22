@@ -1,0 +1,29 @@
+.PokemonCarddd{
+    /* background: rgba(42, 124, 218, 0.4); */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-radius: 10px;
+    -webkit-box-shadow: 17px 17px 61px -6px rgba(0, 0, 0, 0.76);
+    -moz-box-shadow: 17px 17px 61px -6px rgba(0, 0, 0, 0.76);
+    box-shadow: 17px 17px 61px -6px rgba(0, 0, 0, 0.76);
+    margin: 10px;
+    width: 17rem;
+    border-radius: 150px;
+    transition: all 400ms ease;
+    box-sizing: border-box;
+    min-height: 150px;
+    border-color: #60697dfd;
+    border-width: 1.5px;
+    padding: 50px;
+    color: rgb(0, 0, 0);
+}
+.contaainer{
+
+    display: flex;
+    width: 100%;
+    height: 100vh;
+justify-content: center;
+align-items: center;
+flex-direction: column
+}

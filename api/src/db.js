@@ -30,6 +30,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
+//requiero
 const { Pokemon, Tipo } = sequelize.models;
 
 // Aca vendrian las relaciones

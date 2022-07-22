@@ -1,8 +1,8 @@
 const { Router } = require("express");
-const { Pokemon, Tipo } = require("../db");
-const express = require("express");
-const axios = require("axios");
 const router = Router();
+const { Pokemon, Tipo } = require("../db");
+const axios = require("axios");
+
 
 //! -----------------TERMINADO GET /pokemons Y GET /pokemons?name="..."-----------------------
 
@@ -12,7 +12,7 @@ router.get("/", async (req, res, next) => {
   if (name) {
     try {
       const PokemonsAPI = await axios.get(
-        "https://pokeapi.co/api/v2/pokemon?limit=1154"
+        "https://pokeapi.co/api/v2/pokemon?limit=40"
       );
       const PokemonsAdentro = PokemonsAPI.data.results.filter((e) => e.name === name);
 
@@ -20,7 +20,7 @@ router.get("/", async (req, res, next) => {
         const IngresoURLPokemon = await axios.get(PokemonsAdentro[0].url);
         const objAPI = {
           id: IngresoURLPokemon.data.id,
-          name: IngresoURLPokemon.data.name,
+          name: IngresoURLPokemon.data.name.toLowerCase(),
           image:IngresoURLPokemon.data.sprites.other["official-artwork"].front_default,
           life: IngresoURLPokemon.data.stats[0].base_stat,
           attack: IngresoURLPokemon.data.stats[1].base_stat,
@@ -51,8 +51,9 @@ router.get("/", async (req, res, next) => {
             types: e.tipos.map((type) => type.name),
           };
         });
-
         const respuesta = [...objDB, objAPI];
+
+
         res.send(respuesta);
 
       } else {
@@ -62,7 +63,7 @@ router.get("/", async (req, res, next) => {
             name,
           }
         });
-        const PokemonsAdentro = PokemonsDB.filter((e) => e.name === name);
+        const PokemonsAdentro = PokemonsDB.filter((e) => e.name.toLowerCase() === name.toLowerCase());
         if (PokemonsAdentro.length) {
           const objDB = PokemonsDB.map((e) => {
             return {
@@ -100,25 +101,28 @@ router.get("/", async (req, res, next) => {
           id: e.id,
           name: e.name,
           image: e.image,
+          attack: e.attack,
           types: e.tipos.map((type) => type.name),
         };
       });
-      const PokemonsAPI = await axios.get("https://pokeapi.co/api/v2/pokemon");
+      const PokemonsAPI = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=40");
       const PokemonsAdentro = PokemonsAPI.data.results.map((e) =>
         axios.get(e.url)
       );
-      const PokemonsAdentro2 = await axios.all(PokemonsAdentro);
+      const PokemonsAdentro2 = await Promise.all(PokemonsAdentro);
       const PokemonsAdentro3 = PokemonsAdentro2.map((e) => e.data);
       const objApi = PokemonsAdentro3.map((e) => {
         return {
           id: e.id,
           name: e.name,
           image: e.sprites.other["official-artwork"].front_default,
+          attack: e.stats[1].base_stat,
           types: e.types.map((type) => type.type.name),
         };
       });
 
       const resultadoFinal = [...objDB, ...objApi];
+      // const resultadoFinal= await Promise.all(...objDB, objApi)
 
       res.send(resultadoFinal);
     } catch (error) {
@@ -132,10 +136,12 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    const { name, type, life, attack, defense, speed, height, weight } =
-      req.body;
+    const { name, image, type, life, attack, defense, speed, height, weight } =req.body;
+
+      const nombre = name.toLowerCase()
+      
     const newPokemon = await Pokemon.create({
-      name,life,attack,defense,speed,height,weight,
+      name: nombre,image, life,attack,defense,speed,height,weight,
     });
 
     const consultaTipos = await Tipo.findAll({
@@ -167,7 +173,7 @@ router.get("/:id", async (req, res, next) => {
       });
       const objDB = {
         id: PokemonsDB.id,
-        name: PokemonsDB.name,
+        name: PokemonsDB.name.toLowerCase(),
         image: PokemonsDB.image,
         life: PokemonsDB.life,
         attack: PokemonsDB.attack,
@@ -178,13 +184,13 @@ router.get("/:id", async (req, res, next) => {
         types: PokemonsDB.tipos.map((type) => type.name),
       };
       res.send(objDB);
-    } else {
+    } else if (id <= 40){
       const PokemonsAPI = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${id}`
       );
       const objApi = {
         id: PokemonsAPI.data.id,
-        name: PokemonsAPI.data.name,
+        name: PokemonsAPI.data.name.toLowerCase(),
         image: PokemonsAPI.data.sprites.other["official-artwork"].front_default,
         life: PokemonsAPI.data.stats[0].base_stat,
         attack: PokemonsAPI.data.stats[1].base_stat,
@@ -204,3 +210,16 @@ router.get("/:id", async (req, res, next) => {
 //! --------------------------------------------------
 
 module.exports = router;
+
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+      const PokemonsDB = await Pokemon.destroy({where: {id}})
+
+    res.send("Pokemon eliminado con exito")
+  } catch (error) {
+    next(error);
+  }
+})

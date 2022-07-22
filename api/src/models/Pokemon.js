@@ -16,10 +16,6 @@ module.exports = (sequelize) => {
     },
     image: {
       type: DataTypes.STRING,
-      // allowNull: false,
-      validate: {
-        isUrl: true,
-      }
     },
     life: {
       type: DataTypes.INTEGER,
@@ -34,10 +30,10 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
     },
     height: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.INTEGER,
     },
     weight: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.INTEGER,
     },
   });
 };

@@ -1,0 +1,35 @@
+.searchh {
+    border-radius: 5px;
+    padding: 6px 35px 6px 5px;
+    background-color: #ffffff;
+    border: 1px solid rgb(249, 249, 249);
+    margin-top: center;
+    display: inline;
+    outline: none;
+    margin-right: 5px;
+}
+
+.buttton{ 
+    text-decoration: none;
+font-weight: 500;
+    color: #090909;
+    padding: 5px 20px;
+    font-size: 15px;
+    border-radius: 0.5em;
+    background: yellow;
+    border: 1px solid #e8e8e8;
+    transition: all .3s;
+    box-shadow: 3px 3px 10px #c5c5c5,
+    -3px -3px 10px #fff;
+}
+.buttton:hover{
+    box-shadow: -3px -3px 10px #c5c5c5,
+    3px 3px 10px #fff
+}
+.containe{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    
+}
