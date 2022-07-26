@@ -3,7 +3,6 @@ const router = Router();
 const { Pokemon, Tipo } = require("../db");
 const axios = require("axios");
 
-
 //! -----------------TERMINADO GET /pokemons Y GET /pokemons?name="..."-----------------------
 
 router.get("/", async (req, res, next) => {
@@ -14,14 +13,18 @@ router.get("/", async (req, res, next) => {
       const PokemonsAPI = await axios.get(
         "https://pokeapi.co/api/v2/pokemon?limit=40"
       );
-      const PokemonsAdentro = PokemonsAPI.data.results.filter((e) => e.name === name);
+      const PokemonsAdentro = PokemonsAPI.data.results.filter(
+        (e) => e.name === name
+      );
 
       if (PokemonsAdentro.length) {
         const IngresoURLPokemon = await axios.get(PokemonsAdentro[0].url);
         const objAPI = {
           id: IngresoURLPokemon.data.id,
           name: IngresoURLPokemon.data.name.toLowerCase(),
-          image:IngresoURLPokemon.data.sprites.other["official-artwork"].front_default,
+          image:
+            IngresoURLPokemon.data.sprites.other["official-artwork"]
+              .front_default,
           life: IngresoURLPokemon.data.stats[0].base_stat,
           attack: IngresoURLPokemon.data.stats[1].base_stat,
           defense: IngresoURLPokemon.data.stats[2].base_stat,
@@ -34,9 +37,9 @@ router.get("/", async (req, res, next) => {
           include: Tipo,
           where: {
             name,
-          }
+          },
         });
-        
+
         const objDB = PokemonsDB.map((e) => {
           return {
             id: e.id,
@@ -53,17 +56,17 @@ router.get("/", async (req, res, next) => {
         });
         const respuesta = [...objDB, objAPI];
 
-
         res.send(respuesta);
-
       } else {
         const PokemonsDB = await Pokemon.findAll({
           include: Tipo, //! JOIN
           where: {
             name,
-          }
+          },
         });
-        const PokemonsAdentro = PokemonsDB.filter((e) => e.name.toLowerCase() === name.toLowerCase());
+        const PokemonsAdentro = PokemonsDB.filter(
+          (e) => e.name.toLowerCase() === name.toLowerCase()
+        );
         if (PokemonsAdentro.length) {
           const objDB = PokemonsDB.map((e) => {
             return {
@@ -79,12 +82,11 @@ router.get("/", async (req, res, next) => {
               types: e.tipos.map((type) => type.name),
             };
           });
-  
+
           const respuesta = [...objDB];
           res.send(respuesta);
-          
-        }else{
-          res.status(404).send('Insert correct Pokemon name ');
+        } else {
+          res.status(404).send("Insert correct Pokemon name ");
         }
       }
     } catch (error) {
@@ -105,7 +107,9 @@ router.get("/", async (req, res, next) => {
           types: e.tipos.map((type) => type.name),
         };
       });
-      const PokemonsAPI = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=40");
+      const PokemonsAPI = await axios.get(
+        "https://pokeapi.co/api/v2/pokemon?limit=40"
+      );
       const PokemonsAdentro = PokemonsAPI.data.results.map((e) =>
         axios.get(e.url)
       );
@@ -136,12 +140,20 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    const { name, image, type, life, attack, defense, speed, height, weight } =req.body;
+    const { name, image, type, life, attack, defense, speed, height, weight } =
+      req.body;
 
-      const nombre = name.toLowerCase()
-      
+    const nombre = name.toLowerCase();
+
     const newPokemon = await Pokemon.create({
-      name: nombre,image, life,attack,defense,speed,height,weight,
+      name: nombre,
+      image,
+      life,
+      attack,
+      defense,
+      speed,
+      height,
+      weight,
     });
 
     const consultaTipos = await Tipo.findAll({
@@ -184,7 +196,7 @@ router.get("/:id", async (req, res, next) => {
         types: PokemonsDB.tipos.map((type) => type.name),
       };
       res.send(objDB);
-    } else if (id <= 40){
+    } else if (id <= 40) {
       const PokemonsAPI = await axios.get(
         `https://pokeapi.co/api/v2/pokemon/${id}`
       );
@@ -211,15 +223,14 @@ router.get("/:id", async (req, res, next) => {
 
 module.exports = router;
 
-
 router.delete("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
 
-      const PokemonsDB = await Pokemon.destroy({where: {id}})
+    const PokemonsDB = await Pokemon.destroy({ where: { id } });
 
-    res.send("Pokemon eliminado con exito")
+    res.send("Pokemon eliminado con exito");
   } catch (error) {
     next(error);
   }
-})
+});
